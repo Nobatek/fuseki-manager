@@ -14,10 +14,6 @@ fuseki-manager
         :target: https://landscape.io/github/Nobatek/fuseki-manager/master
         :alt: Code Health
 
-.. image:: https://api.codacy.com/project/badge/Grade/463485aeeac048f08cb4f40ebeb61160
-        :target: https://www.codacy.com/app/lafrech/fuseki-manager?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Nobatek/fuseki-manager&amp;utm_campaign=Badge_Grade
-        :alt: Code Health
-
 About
 =====
 
@@ -46,7 +42,7 @@ Installation
 Development
 ===========
 
-### Use a virtual environnement to debug or develop.
+**Use a virtual environnement to debug or develop**
 
 .. code-block:: shell
 
@@ -56,8 +52,7 @@ Development
     # Activate virtualenv
     $ source $VIRTUALENVS_DIR/fuseki-manager/bin/activate
 
-
-### Tests
+**Tests**
 
 .. code-block:: shell
 
