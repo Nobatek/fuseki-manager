@@ -10,6 +10,10 @@ fuseki-manager
         :target: https://coveralls.io/github/Nobatek/fuseki-manager/?branch=master
         :alt: Code coverage
 
+.. image:: https://api.codacy.com/project/badge/Grade/5b3d5c5fae194b1cb57891465182448a
+        :target: https://www.codacy.com/app/lafrech/fuseki-manager
+        :alt: Code health
+
 About
 =====
 
