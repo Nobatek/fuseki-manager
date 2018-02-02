@@ -10,10 +10,6 @@ fuseki-manager
         :target: https://coveralls.io/github/Nobatek/fuseki-manager/?branch=master
         :alt: Code coverage
 
-.. image:: https://landscape.io/github/Nobatek/fuseki-manager/master/landscape.svg?style=flat
-        :target: https://landscape.io/github/Nobatek/fuseki-manager/master
-        :alt: Code Health
-
 About
 =====
 
