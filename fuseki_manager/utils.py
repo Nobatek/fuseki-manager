@@ -12,7 +12,7 @@ def build_rdf_file_obj(file_path):
     :returns tuple: File object information.
     :raises InvalidFileError: If 'file_path' is not a file.
     """
-    # ensure 'file_path' is instance of 'Path'
+    # ensure 'file_path' is instance of 'Path'
     file_path = Path(file_path)
     if not file_path.is_file():
         raise InvalidFileError(str(file_path))

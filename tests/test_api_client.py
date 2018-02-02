@@ -11,7 +11,7 @@ from fuseki_manager.api_client import FusekiBaseClient
 from fuseki_manager.exceptions import (
     FusekiClientResponseError,
     DatasetAlreadyExistsError, DatasetNotFoundError,
-    TaskNotFoundError, InvalidFileError)
+    InvalidFileError)
 
 
 class TestFusekiBaseClient():
@@ -162,7 +162,8 @@ class TestFusekiAdminClient():
                 admin_client.create_dataset(ds_name)
 
     @responses.activate
-    def test_admin_api_client_get_dataset(self, admin_client, ds_name, ds_data):
+    def test_admin_api_client_get_dataset(
+            self, admin_client, ds_name, ds_data):
 
         responses.add(
             method=responses.GET,
@@ -274,7 +275,8 @@ class TestFusekiAdminClient():
         assert 'datasets' in result
 
     @responses.activate
-    def test_admin_api_client_get_stats(self, admin_client, ds_name, stat_data):
+    def test_admin_api_client_get_stats(
+            self, admin_client, ds_name, stat_data):
 
         response_data = {
             'datasets': stat_data,
@@ -312,7 +314,7 @@ class TestFusekiAdminClient():
     @responses.activate
     def test_admin_api_client_create_backup(self, admin_client, ds_name):
 
-        response_data = {'requestId': 14800, 'taskId': '1',}
+        response_data = {'requestId': 14800, 'taskId': '1'}
         responses.add(
             method=responses.POST,
             url=admin_client._build_uri('backup/{}'.format(ds_name)),
@@ -366,7 +368,6 @@ class TestFusekiDataClient():
         uri = client._build_uri('data_service')
         assert uri == 'http://localhost:3030/data_service'
 
-
     @responses.activate
     def test_data_api_client_drop_all(self, data_client, ds_name):
 
@@ -398,10 +399,8 @@ class TestFusekiDataClient():
 
         file_path = Path(os.path.realpath(__file__))
 
-        # TypeError
         with pytest.raises(TypeError):
             data_client.upload_files(ds_name, None)
 
-        # InvalidFileError
         with pytest.raises(InvalidFileError):
             data_client.upload_files(ds_name, [file_path.parent])

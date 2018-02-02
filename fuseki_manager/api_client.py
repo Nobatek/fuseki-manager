@@ -154,7 +154,6 @@ class FusekiAdminClient(FusekiBaseClient):
         self._service_data = FusekiDataClient(
             host=host, port=port, is_secured=is_secured, user=user, pwd=pwd)
 
-
     def _build_uri(self, service_name):
         """Build service URI.
 
@@ -171,9 +170,9 @@ class FusekiAdminClient(FusekiBaseClient):
         """
         uri = self._build_uri('ping')
         response = self._get(uri, use_auth=False)
-        # TODO: remove python-dateutil dependency
-        # Starting from Python 3.7, strptime supports colon delimiters
-        # in UTC offsets (https://stackoverflow.com/a/48539157)
+        # TODO: remove python-dateutil dependency
+        # Starting from Python 3.7, strptime supports colon delimiters
+        # in UTC offsets (https://stackoverflow.com/a/48539157)
         return dt_parser.parse(response.text)
 
     def server_info(self):
@@ -387,7 +386,7 @@ class FusekiDataClient(FusekiBaseClient):
         :raises InvalidFileError:
         """
         uri = self._build_uri(ds_name, service_name='data')
-        # build files parameter
+        # build files parameter
         files = [
             ('file', build_rdf_file_obj(file_path))
             for file_path in file_paths]

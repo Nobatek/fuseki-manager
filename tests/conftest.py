@@ -43,7 +43,7 @@ def ds_data():
             {
                 'srv.type': 'Query',
                 'srv.description': 'SPARQL Query',
-                'srv.endpoints': ['query', 'sparql',],
+                'srv.endpoints': ['query', 'sparql'],
             },
             {
                 'srv.type': 'GSP_RW',

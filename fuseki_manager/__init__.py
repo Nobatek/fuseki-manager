@@ -1,3 +1,3 @@
 """Fuseki admin initialization."""
 
-from .api_client import FusekiAdminClient, FusekiDataClient
+from .api_client import FusekiAdminClient, FusekiDataClient  # flake8: noqa
