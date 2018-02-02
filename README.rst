@@ -30,7 +30,7 @@ Examples
 
     # Get datasets
     result = client.get_all_datasets()
-    # 'result' contains information about datasets
+    # 'result' contains information about datasets
 
 Installation
 ============
@@ -49,7 +49,7 @@ Development
     # Create virtual environment
     $ virtualenv -p /usr/bin/python3 $VIRTUALENVS_DIR/fuseki-manager
 
-    # Activate virtualenv
+    # Activate virtualenv
     $ source $VIRTUALENVS_DIR/fuseki-manager/bin/activate
 
 **Tests**
@@ -59,10 +59,10 @@ Development
     # Install test dependencies
     $ pip install -e .[test]
 
-    # Run tests
+    # Run tests
     $ py.test
 
-    # Skip slow tests
+    # Skip slow tests
     $ py.test -m 'not slow'
 
     # Run tests with coverage
