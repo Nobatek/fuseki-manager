@@ -18,6 +18,7 @@ About
 =====
 
 Jena/Fuseki API clients to manage server and datasets throught HTTP.
+Based on `Fuseki server protocol <https://jena.apache.org/documentation/fuseki2/fuseki-server-protocol.html>`_.
 
 Examples
 ========
