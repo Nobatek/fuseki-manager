@@ -1,5 +1,6 @@
 """Fixtures for client testing."""
 
+import os
 import pytest
 
 from fuseki_manager import FusekiAdminClient, FusekiDataClient
@@ -136,3 +137,9 @@ def task_data():
         'started': '2018-02-01T17:07:23.027+00:00',
         'finished': '2018-02-01T17:07:23.055+00:00',
     }
+
+
+@pytest.fixture()
+def config_path():
+    """Return a sample of configuration file path."""
+    return os.path.realpath(__file__)

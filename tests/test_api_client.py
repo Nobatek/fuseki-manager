@@ -145,6 +145,19 @@ class TestFusekiAdminClient():
         assert 'ds.services' in result
         assert len(result['ds.services']) > 0
 
+    @responses.activate
+    def test_admin_api_client_create_dataset_from_config_file(
+            self, admin_client, config_path):
+
+        responses.add(
+            method=responses.POST,
+            url=admin_client._build_uri('datasets'),
+            status=200,
+        )
+
+        result = admin_client.create_dataset_from_config_file(config_path)
+        assert result
+
     def test_admin_api_client_create_dataset_errors(
             self, admin_client, ds_name):
 

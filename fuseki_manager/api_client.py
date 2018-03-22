@@ -7,7 +7,7 @@ https://jena.apache.org/documentation/fuseki2/fuseki-server-protocol.html
 from dateutil import parser as dt_parser
 import requests
 
-from .utils import build_rdf_file_obj
+from .utils import build_http_file_obj
 from .exceptions import (
     FusekiClientError, FusekiClientResponseError,
     DatasetNotFoundError, DatasetAlreadyExistsError,
@@ -194,7 +194,7 @@ class FusekiAdminClient(FusekiBaseClient):
         return response.json()
 
     def create_dataset(self, ds_name, *, ds_type='mem'):
-        """Add a dataset set to a running server.
+        """Add a dataset to a running server.
 
         :param str ds_name: Dataset's name.
         :param str ds_type: Dataset's type (either 'mem' or 'tdb').
@@ -210,8 +210,23 @@ class FusekiAdminClient(FusekiBaseClient):
             raise DatasetAlreadyExistsError(response.reason)
         return self.get_dataset(ds_name)
 
+    def create_dataset_from_config_file(self, config_path):
+        """Sets up a dataset from a configuration file on a running server.
+
+        :param str|Path config_path: Configuration file path (turtle format).
+        :returns bool: True if no errors raised.
+        """
+        uri = self._build_uri('datasets')
+        # build files parameter
+        config_path = ('file', build_http_file_obj(config_path, 'text/turtle'))
+        response = self._post(
+            uri, expected_status=(200, 409,), files=[config_path])
+        if response.status_code == 409:
+            raise DatasetAlreadyExistsError(response.reason)
+        return True
+
     def get_dataset(self, ds_name):
-        """Get a dataset set can from a running server.
+        """Get a dataset can from a running server.
 
         :param str ds_name: Dataset's name.
         :returns dict: Details on dataset container, JSON format.
@@ -388,7 +403,7 @@ class FusekiDataClient(FusekiBaseClient):
         uri = self._build_uri(ds_name, service_name='data')
         # build files parameter
         files = [
-            ('file', build_rdf_file_obj(file_path))
+            ('file', build_http_file_obj(file_path, 'application/rdf+xml'))
             for file_path in file_paths]
         response = self._post(uri, files=files)
         return response.json()
