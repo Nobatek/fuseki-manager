@@ -9,6 +9,7 @@ import responses
 from fuseki_manager import FusekiAdminClient, FusekiDataClient
 from fuseki_manager.api_client import FusekiBaseClient
 from fuseki_manager.exceptions import (
+    # FusekiClientError,
     FusekiClientResponseError,
     DatasetAlreadyExistsError, DatasetNotFoundError,
     InvalidFileError)
@@ -49,6 +50,20 @@ class TestFusekiBaseClient():
             ', is_secured=False'
             ', auth_user=None'
             ')')
+
+    # @pytest.mark.slow
+    # def test_base_api_client_errors(self, admin_client):
+    #
+    #     client = FusekiBaseClient(host='fuseki.local', port=None)
+    #
+    #     with pytest.raises(FusekiClientError):
+    #         client._get(client._base_uri)
+    #
+    #     with pytest.raises(FusekiClientError):
+    #         client._post(client._base_uri)
+    #
+    #     with pytest.raises(FusekiClientError):
+    #         client._delete(client._base_uri)
 
 
 class TestFusekiAdminClient():
@@ -159,7 +174,7 @@ class TestFusekiAdminClient():
         assert result
 
     def test_admin_api_client_create_dataset_errors(
-            self, admin_client, ds_name):
+            self, admin_client, ds_name, config_path):
 
         with pytest.raises(ValueError):
             admin_client.create_dataset(ds_name, ds_type='INVALID')
@@ -173,6 +188,15 @@ class TestFusekiAdminClient():
             )
             with pytest.raises(DatasetAlreadyExistsError):
                 admin_client.create_dataset(ds_name)
+
+        with responses.RequestsMock() as rsps:
+            rsps.add(
+                method=responses.POST,
+                url=admin_client._build_uri('datasets'),
+                status=409,
+            )
+            with pytest.raises(DatasetAlreadyExistsError):
+                admin_client.create_dataset_from_config_file(config_path)
 
     @responses.activate
     def test_admin_api_client_get_dataset(
@@ -371,6 +395,22 @@ class TestFusekiAdminClient():
         assert result == task_data
         assert 'taskId' in result
         assert result['taskId'] == '1'
+
+    @responses.activate
+    def test_admin_api_client_restore_data(
+            self, admin_client, data_client, ds_name):
+
+        response_data = {'count': 1163, 'tripleCount': 1163, 'quadCount': 0}
+        responses.add(
+            method=responses.POST,
+            url=data_client._build_uri(ds_name, service_name='data'),
+            status=200,
+            json=response_data,
+        )
+
+        file_path = Path(os.path.realpath(__file__))
+        result = admin_client.restore_data(ds_name, [file_path])
+        assert result == response_data
 
 
 class TestFusekiDataClient():
