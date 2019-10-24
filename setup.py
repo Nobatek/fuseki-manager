@@ -68,8 +68,8 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'test': [
-            'pytest>=2.8',
-            'pytest-cov>=2.4.0',
+            'pytest==2.8',
+            'pytest-cov==2.4.0',
             'responses==0.8.1',
             'tox>=2.0',
         ],
