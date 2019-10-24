@@ -258,8 +258,7 @@ class TestFusekiAdminClient():
             )
             rsps.add(
                 method=responses.POST,
-                url='{}?update=DROP+ALL'.format(
-                    data_client._build_uri(ds_name)),
+                url='{}/update'.format(data_client._build_uri(ds_name)),
                 status=200,
             )
 
@@ -426,7 +425,7 @@ class TestFusekiDataClient():
 
         responses.add(
             method=responses.POST,
-            url='{}?update=DROP+ALL'.format(data_client._build_uri(ds_name)),
+            url='{}/update'.format(data_client._build_uri(ds_name)),
             status=200,
         )
 
