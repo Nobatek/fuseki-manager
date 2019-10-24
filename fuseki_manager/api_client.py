@@ -387,9 +387,9 @@ class FusekiDataClient(FusekiBaseClient):
         :param str ds_name: Dataset's name.
         :returns bool: True if all data is removed without errors.
         """
-        uri = self._build_uri(ds_name)
+        uri = self._build_uri(ds_name, service_name='update')
         query_params = {'update': 'DROP ALL'}
-        self._post(uri, params=query_params, expected_status=(200, 204,))
+        self._post(uri, data=query_params, expected_status=(200, 204,))
         return True
 
     def upload_files(self, ds_name, file_paths):
