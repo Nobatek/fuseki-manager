@@ -27,7 +27,7 @@ class TestFusekiManagerUtils():
     def test_utils_url_validator(self):
         assert (url_validator('http://foobar.net'))
         assert (url_validator('https://foo-5-bar.net/baz/'))
-        assert (url_validator('https://foo-bar.net/baz/zed#'))
+        assert (url_validator('https://localhost:3030/baz/zed#'))
         assert (not url_validator('//foo_bar.net'))
         assert (not url_validator('//foà0@o§-bar.net'))
         assert (not url_validator('http://10.0.0.1'))

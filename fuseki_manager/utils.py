@@ -29,6 +29,8 @@ def url_validator(value):
         # protocol identifier
         r"(?:(?:https?|ftp)://)"
         r"(?:"
+        r"(localhost)"
+        r"|"
         # host name
         r"(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)"
         # domain name
