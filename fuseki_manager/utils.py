@@ -1,5 +1,6 @@
 """Jena/Fuseki API client utils."""
 
+import re
 from pathlib import Path
 
 from .exceptions import InvalidFileError
@@ -18,3 +19,31 @@ def build_http_file_obj(file_path, mime_type):
     if not file_path.is_file():
         raise InvalidFileError(str(file_path))
     return (file_path.name, open(str(file_path), 'rb'), mime_type)
+
+
+def url_validator(value):
+    """Return whether or not given value is a valid URL."""
+
+    regex = re.compile(
+        r"^"
+        # protocol identifier
+        r"(?:(?:https?|ftp)://)"
+        r"(?:"
+        # host name
+        r"(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)"
+        # domain name
+        r"(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*"
+        # TLD identifier
+        r"(?:\.(?:[a-z\u00a1-\uffff]{2,}))"
+        r")"
+        # port number
+        r"(?::\d{2,5})?"
+        # resource path
+        r"(?:/\S*)?"
+        # query string
+        r"(?:\?\S*)?"
+        r"$",
+        re.UNICODE | re.IGNORECASE
+    )
+    pattern = re.compile(regex)
+    return pattern.match(value)
