@@ -7,3 +7,4 @@ https://jena.apache.org/documentation/fuseki2/fuseki-server-protocol.html
 from .admin import FusekiAdminClient    # noqa
 from .data import FusekiDataClient      # noqa
 from .base import FusekiBaseClient      # noqa
+from .sparql import FusekiSPARQLClient  # noqa

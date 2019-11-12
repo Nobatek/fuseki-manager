@@ -8,6 +8,9 @@ import responses
 
 from fuseki_manager import FusekiAdminClient, FusekiDataClient
 from fuseki_manager.api_client import FusekiBaseClient
+from fuseki_manager import FusekiSPARQLClient
+from fuseki_manager.api_client.sparql import _parse_uri
+
 from fuseki_manager.exceptions import (
     # FusekiClientError,
     FusekiClientResponseError,
@@ -456,3 +459,59 @@ class TestFusekiDataClient():
 
         with pytest.raises(InvalidFileError):
             data_client.upload_files(ds_name, [file_path.parent])
+
+
+class TestFusekiSPARQLClient():
+
+    def test_sparql_api_client(self):
+        client = FusekiSPARQLClient(ds_name='test')
+        assert client._service_uri == 'http://localhost:3030/test/sparql'
+
+    def test_sparql_api_client_parse_uri(self):
+        uri = _parse_uri('http://localhost:3030/data-service/')
+        assert uri == '<http://localhost:3030/data-service/>'
+
+    @responses.activate
+    def test_sparql_api_client_query(self, sparql_client, triple_data):
+        responses.add(
+            method=responses.GET,
+            url=sparql_client._service_uri,
+            status=200,
+            json=triple_data,
+        )
+
+        query = "SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 25"
+        result = sparql_client.query(query)
+        assert result == triple_data['results']['bindings']
+
+    @responses.activate
+    def test_sparql_api_client_triples(self, sparql_client, triple_data):
+        expected_result = [
+            (r['s']['value'], r['p']['value'], r['o']['value'])
+            for r in triple_data['results']['bindings']
+        ]
+
+        responses.add(
+            method=responses.GET,
+            url=sparql_client._service_uri,
+            status=200,
+            json=triple_data,
+        )
+
+        pred = 'rdf:type'
+        result = sparql_client.triples(sbj=None, pred=pred, obj=None)
+        assert result == expected_result
+
+    @responses.activate
+    def test_sparql_api_client_value(self, sparql_client, value_data):
+        print(sparql_client._service_uri)
+        responses.add(
+            method=responses.GET,
+            url=sparql_client._service_uri,
+            status=200,
+            json=value_data,
+        )
+
+        subj, pred = 'http://url.org/dummy#foo', 'rdf:type'
+        result = sparql_client.value(sbj=subj, pred=pred)
+        assert result == value_data['results']['bindings'][0]['o']['value']

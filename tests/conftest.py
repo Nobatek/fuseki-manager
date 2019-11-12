@@ -3,7 +3,9 @@
 import os
 import pytest
 
-from fuseki_manager import FusekiAdminClient, FusekiDataClient
+from fuseki_manager import (
+    FusekiAdminClient, FusekiDataClient, FusekiSPARQLClient
+)
 
 
 @pytest.fixture()
@@ -16,6 +18,13 @@ def admin_client():
 def data_client():
     """Return a client instance of data API."""
     return FusekiDataClient(host='fuseki.local', port=None)
+
+
+@pytest.fixture()
+def sparql_client():
+    """Return a client instance of data API."""
+    ns = {'rdf': 'http://rdf.org#'}
+    return FusekiSPARQLClient(ds_name='ds_test', namespaces=ns)
 
 
 @pytest.fixture()
@@ -143,3 +152,51 @@ def task_data():
 def config_path():
     """Return a sample of configuration file path."""
     return os.path.realpath(__file__)
+
+
+@pytest.fixture()
+def triple_data():
+    """Return a sample of triple data."""
+    return {
+        "head": {
+            "vars": ["s", "p", "o"]
+        },
+        "results": {
+            "bindings": [
+                {
+                    "s": {"type": "uri", "value": "http://url.org/dummy#foo"},
+                    "p": {"type": "uri", "value": "http://rdf.org#type"},
+                    "o": {"type": "uri", "value": "http://url.org/dummy#Class"}
+                },
+                {
+                    "s": {"type": "uri", "value": "http://url.org/dummy#bar"},
+                    "p": {"type": "uri", "value": "http://rdf.org#type"},
+                    "o": {"type": "uri", "value": "http://url.org/dummy#Class"}
+                },
+                {
+                    "s": {"type": "uri", "value": "http://url.org/dummy#baz"},
+                    "p": {"type": "uri", "value": "http://rdf.org#type"},
+                    "o": {"type": "uri", "value": "http://url.org/dummy#Class"}
+                }
+            ]
+        }
+    }
+
+
+@pytest.fixture()
+def value_data():
+    """Return a sample of value data."""
+    return {
+        "head": {
+            "vars": ["s", "p", "o"]
+        },
+        "results": {
+            "bindings": [
+                {
+                    "s": {"type": "uri", "value": "http://url.org/dummy#foo"},
+                    "p": {"type": "uri", "value": "http://rdf.org#type"},
+                    "o": {"type": "uri", "value": "http://url.org/dummy#Class"}
+                }
+            ]
+        }
+    }
