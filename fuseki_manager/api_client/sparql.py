@@ -37,8 +37,8 @@ class FusekiSPARQLClient(FusekiBaseClient):
         bind_str = ''
         if bindings:
             keys = ' '.join(map(lambda x: '?{}'.format(x), bindings.keys()))
-            values = ' '.join(bindings.values())
-            pattern = " VALUES ({k}){{({v})}}"
+            values = ' '.join(_parse_uri(x, False) for x in bindings.values())
+            pattern = " VALUES ({k}) {{({v})}}"
             bind_str = pattern.format(k=keys, v=values)
 
         return '{}{}{}'.format(ns_str, query, bind_str)
@@ -106,7 +106,9 @@ class FusekiSPARQLClient(FusekiBaseClient):
         raise ArgumentError(msg.format(sbj, pred, obj))
 
 
-def _parse_uri(uri):
+def _parse_uri(uri, raise_if_not_uri=True):
     if isinstance(uri, str) and url_validator(uri):
         return '<{}>'.format(uri)
-    raise ArgumentError('Not a valid URI.')
+    if raise_if_not_uri:
+        raise ArgumentError('Not a valid URI.')
+    return uri

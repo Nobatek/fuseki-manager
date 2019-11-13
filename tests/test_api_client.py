@@ -475,10 +475,12 @@ class TestFusekiSPARQLClient():
         assert uri == '<http://localhost:3030/data-service/>'
 
     def test_sparql_api_client_prepare_request(self, sparql_client):
-        query = "SELECT ?s ?p ?o WHERE { ?s rdf:type ?o } LIMIT 25"
-        pquery = sparql_client._prepare_query(query)
+        query = "SELECT ?s ?p ?o WHERE { ?s rdf:type ?var } LIMIT 25"
+        bindings = {'var': 'http://www.foo.bar/baz'}
+        pquery = sparql_client._prepare_query(query, bindings=bindings)
         assert pquery == "PREFIX rdf: <http://www.rdf.org/#> " \
-            "SELECT ?s ?p ?o WHERE { ?s rdf:type ?o } LIMIT 25"
+            "SELECT ?s ?p ?o WHERE { ?s rdf:type ?var } LIMIT 25 " \
+            "VALUES (?var) {(<http://www.foo.bar/baz>)}"
 
     @responses.activate
     def test_sparql_api_client_query(self, sparql_client, triple_data):
