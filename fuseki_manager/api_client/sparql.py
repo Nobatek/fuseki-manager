@@ -25,10 +25,14 @@ class FusekiSPARQLClient(FusekiBaseClient):
     def _prepare_query(self, query, namespaces={}, bindings={}):
         """Prepare query"""
         ns_str = ''
-        namespaces = self._namespaces.copy().update(namespaces)
-        if namespaces:
+        ns = self._namespaces.copy()
+        ns.update(namespaces)
+        if ns:
             pattern = "PREFIX {}: {} "
-            ns_str = ''.join(_parse_uri(ns) for ns in namespaces.items())
+            ns_str = ''.join(
+                pattern.format(k, _parse_uri(v))
+                for k, v in ns.items()
+            )
 
         bind_str = ''
         if bindings:
@@ -37,7 +41,9 @@ class FusekiSPARQLClient(FusekiBaseClient):
             pattern = " VALUES ({k}){{({v})}}"
             bind_str = pattern.format(k=keys, v=values)
 
-        prepared_query = '{}{}{}'.format(ns_str, query, bind_str)
+        return '{}{}{}'.format(ns_str, query, bind_str)
+
+    def _exec_query(self, prepared_query):
         params = {'query': prepared_query}
         response = self._get(self._service_uri, params=params)
         return response.json()
@@ -46,7 +52,8 @@ class FusekiSPARQLClient(FusekiBaseClient):
               raise_if_empty=False, raise_if_many=False,
               **kwargs):
         """List SPARQL query results."""
-        jsonres = self._prepare_query(query, **kwargs)
+        query = self._prepare_query(query, **kwargs)
+        jsonres = self._exec_query(query)
 
         results = jsonres['results']['bindings']
         nb_results = len(results)

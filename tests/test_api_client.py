@@ -464,12 +464,21 @@ class TestFusekiDataClient():
 class TestFusekiSPARQLClient():
 
     def test_sparql_api_client(self):
-        client = FusekiSPARQLClient(ds_name='test')
+        ns = {'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
+        client = FusekiSPARQLClient(ds_name='test', namespaces=ns)
+
         assert client._service_uri == 'http://localhost:3030/test/sparql'
+        assert client._namespaces == ns
 
     def test_sparql_api_client_parse_uri(self):
         uri = _parse_uri('http://localhost:3030/data-service/')
         assert uri == '<http://localhost:3030/data-service/>'
+
+    def test_sparql_api_client_prepare_request(self, sparql_client):
+        query = "SELECT ?s ?p ?o WHERE { ?s rdf:type ?o } LIMIT 25"
+        pquery = sparql_client._prepare_query(query)
+        assert pquery == "PREFIX rdf: <http://www.rdf.org/#> " \
+            "SELECT ?s ?p ?o WHERE { ?s rdf:type ?o } LIMIT 25"
 
     @responses.activate
     def test_sparql_api_client_query(self, sparql_client, triple_data):

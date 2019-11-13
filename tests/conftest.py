@@ -23,7 +23,7 @@ def data_client():
 @pytest.fixture()
 def sparql_client():
     """Return a client instance of data API."""
-    ns = {'rdf': 'http://rdf.org#'}
+    ns = {'rdf': 'http://www.rdf.org/#'}
     return FusekiSPARQLClient(ds_name='ds_test', namespaces=ns)
 
 
@@ -165,17 +165,17 @@ def triple_data():
             "bindings": [
                 {
                     "s": {"type": "uri", "value": "http://url.org/dummy#foo"},
-                    "p": {"type": "uri", "value": "http://rdf.org#type"},
+                    "p": {"type": "uri", "value": "http://www.rdf.org/#type"},
                     "o": {"type": "uri", "value": "http://url.org/dummy#Class"}
                 },
                 {
                     "s": {"type": "uri", "value": "http://url.org/dummy#bar"},
-                    "p": {"type": "uri", "value": "http://rdf.org#type"},
+                    "p": {"type": "uri", "value": "http://www.rdf.org/#type"},
                     "o": {"type": "uri", "value": "http://url.org/dummy#Class"}
                 },
                 {
                     "s": {"type": "uri", "value": "http://url.org/dummy#baz"},
-                    "p": {"type": "uri", "value": "http://rdf.org#type"},
+                    "p": {"type": "uri", "value": "http://www.rdf.org/#type"},
                     "o": {"type": "uri", "value": "http://url.org/dummy#Class"}
                 }
             ]
@@ -194,7 +194,7 @@ def value_data():
             "bindings": [
                 {
                     "s": {"type": "uri", "value": "http://url.org/dummy#foo"},
-                    "p": {"type": "uri", "value": "http://rdf.org#type"},
+                    "p": {"type": "uri", "value": "http://www.rdf.org/#type"},
                     "o": {"type": "uri", "value": "http://url.org/dummy#Class"}
                 }
             ]
