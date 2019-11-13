@@ -48,6 +48,10 @@ class FusekiSPARQLClient(FusekiBaseClient):
         response = self._get(self._service_uri, params=params)
         return response.json()
 
+    def raw_query(self, query, **kwargs):
+        query = self._prepare_query(query, **kwargs)
+        return self._exec_query(query)
+
     def query(self, query, *,
               raise_if_empty=False, raise_if_many=False,
               **kwargs):
