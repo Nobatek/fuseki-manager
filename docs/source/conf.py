@@ -14,6 +14,9 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
+import recommonmark
+from recommonmark.transform import AutoStructify
+
 
 # -- Project information -----------------------------------------------------
 
@@ -31,7 +34,8 @@ release = '0.0.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc'
+    'sphinx.ext.autodoc',
+    'recommonmark'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -54,3 +58,20 @@ html_theme = 'alabaster'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# The file extensions of source files. Sphinx considers the files with this 
+# suffix as sources. The value can be a dictionary mapping file extensions to 
+# file types.
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
+}
+
+# Recommonmark configuration
+def setup(app):
+    app.add_config_value('recommonmark_config', {
+            'auto_toc_tree_section': 'Contents',
+            'enable_eval_rst': True,
+            }, True)
+    app.add_transform(AutoStructify)
