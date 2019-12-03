@@ -28,7 +28,7 @@ def build_http_file_obj(source, mime_type):
         return (source.name, open(str(source), 'rb'), mime_type)
 
     if issubclass(source.__class__, BufferedIOBase):
-        return ('file_name', source, mime_type)
+        return ('unknown', source, mime_type)
 
     raise InvalidFileError(str(source))
 
