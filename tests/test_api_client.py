@@ -2,6 +2,7 @@
 
 import datetime as dt
 import os
+import io
 from pathlib import Path
 import pytest
 import responses
@@ -450,6 +451,10 @@ class TestFusekiDataClient():
         result = data_client.upload_files(ds_name, [file_path])
         assert result == response_data
 
+        files = [io.BytesIO(b'demo'), io.BytesIO(b'test')]
+        result = data_client.upload_files(ds_name, files)
+        assert result == response_data
+
     def test_data_api_client_errors(self, data_client, ds_name):
 
         file_path = Path(os.path.realpath(__file__))
@@ -515,7 +520,6 @@ class TestFusekiSPARQLClient():
 
     @responses.activate
     def test_sparql_api_client_value(self, sparql_client, value_data):
-        print(sparql_client._service_uri)
         responses.add(
             method=responses.GET,
             url=sparql_client._service_uri,
