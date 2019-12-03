@@ -1,6 +1,8 @@
 from ..utils import url_validator
 from ..exceptions import EmptyDBError, UniquenessDBError, ArgumentError
+
 from .base import FusekiBaseClient
+from .data import FusekiDataClient
 
 
 class FusekiSPARQLClient(FusekiBaseClient):
@@ -11,8 +13,11 @@ class FusekiSPARQLClient(FusekiBaseClient):
                  **kwargs):
 
         super().__init__(**kwargs)
+        self._service_data = FusekiDataClient(**kwargs)
+
+        self._ds_name = ds_name
         self._namespaces = namespaces
-        self._service_uri = self._build_uri(ds_name, service_name)
+        self._service_uri = self._build_uri(service_name)
 
     def _build_uri(self, ds_name, service_name='sparql'):
         """Build service URI.
@@ -20,7 +25,7 @@ class FusekiSPARQLClient(FusekiBaseClient):
         :param str ds_name: Dataset's name used in URI.
         :returns str: Service's absolute URI.
         """
-        return '{}{}/{}'.format(self._base_uri, ds_name, service_name)
+        return '{}{}/{}'.format(self._base_uri, self._ds_name, service_name)
 
     def _prepare_query(self, query, namespaces={}, bindings={}):
         """Prepare query"""
@@ -108,6 +113,19 @@ class FusekiSPARQLClient(FusekiBaseClient):
 
         msg = "Invalid arguments ({}, {}, {})"
         raise ArgumentError(msg.format(sbj, pred, obj))
+
+    def upload_data(self, files):
+        """Upload and insert datas by sending a list of files to a dataset.
+        (Fuseki data service is involved.)
+
+        :param list[] files: List of file's to send.
+        :returns dict: Details on data inserted, JSON format.
+
+        Note: files could be a list of:
+        - Path or string to file_name
+        - file-like object
+        """
+        return self._service_data.upload_files(self._ds_name, files)
 
 
 def _parse_uri(uri, raise_if_not_uri=True):
