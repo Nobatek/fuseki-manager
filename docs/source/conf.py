@@ -12,10 +12,8 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
-
-import recommonmark
 from recommonmark.transform import AutoStructify
+sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- Project information -----------------------------------------------------
@@ -59,14 +57,15 @@ html_theme = 'alabaster'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-# The file extensions of source files. Sphinx considers the files with this 
-# suffix as sources. The value can be a dictionary mapping file extensions to 
+# The file extensions of source files. Sphinx considers the files with this
+# suffix as sources. The value can be a dictionary mapping file extensions to
 # file types.
 source_suffix = {
     '.rst': 'restructuredtext',
     '.txt': 'markdown',
     '.md': 'markdown',
 }
+
 
 # Recommonmark configuration
 def setup(app):
