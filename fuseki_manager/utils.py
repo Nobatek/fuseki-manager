@@ -1,7 +1,7 @@
 """Jena/Fuseki API client utils."""
 
 import re
-from io import BufferedIOBase
+from io import BufferedIOBase, BytesIO
 from pathlib import Path
 
 from .exceptions import InvalidFileError
@@ -29,6 +29,9 @@ def build_http_file_obj(source, mime_type):
 
     if issubclass(source.__class__, BufferedIOBase):
         return ('unknown', source, mime_type)
+
+    if isinstance(source, bytes):
+        return ('unknown', BytesIO(source), mime_type)
 
     raise InvalidFileError(str(source))
 
