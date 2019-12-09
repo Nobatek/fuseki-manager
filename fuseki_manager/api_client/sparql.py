@@ -17,15 +17,18 @@ class FusekiSPARQLClient(FusekiBaseClient):
 
         self._ds_name = ds_name
         self._namespaces = namespaces
-        self._service_uri = self._build_uri(service_name)
+        self._service_name = service_name
 
-    def _build_uri(self, service_name='sparql'):
+    def _build_uri(self):
         """Build service URI.
 
-        :param str service_name: Service name  to use.
         :returns str: Service's absolute URI.
         """
-        return '{}{}/{}'.format(self._base_uri, self._ds_name, service_name)
+        return '{}{}/{}'.format(
+            self._base_uri,
+            self._ds_name,
+            self._service_name
+        )
 
     def _prepare_query(self, query, namespaces={}, bindings={}):
         """Prepare query"""
@@ -50,7 +53,7 @@ class FusekiSPARQLClient(FusekiBaseClient):
 
     def _exec_query(self, prepared_query):
         params = {'query': prepared_query}
-        response = self._get(self._service_uri, params=params)
+        response = self._get(self._build_uri(), params=params)
         return response.json()
 
     def raw_query(self, query, **kwargs):
@@ -129,8 +132,10 @@ class FusekiSPARQLClient(FusekiBaseClient):
 
 
 def _parse_uri(uri, raise_if_not_uri=True):
-    if isinstance(uri, str) and url_validator(uri):
-        return '<{}>'.format(uri)
-    if raise_if_not_uri:
-        raise ArgumentError('Not a valid URI.')
-    return uri
+    if isinstance(uri, str):
+        if url_validator(uri):
+            return '<{}>'.format(uri)
+        if not raise_if_not_uri:
+            return uri
+    msg = 'Invalid URI [{}]'
+    raise ArgumentError(msg.format(uri))

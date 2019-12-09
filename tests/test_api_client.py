@@ -16,7 +16,7 @@ from fuseki_manager.exceptions import (
     # FusekiClientError,
     FusekiClientResponseError,
     DatasetAlreadyExistsError, DatasetNotFoundError,
-    InvalidFileError)
+    InvalidFileError, ArgumentError)
 
 
 class TestFusekiBaseClient():
@@ -470,14 +470,27 @@ class TestFusekiSPARQLClient():
 
     def test_sparql_api_client(self):
         ns = {'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
-        client = FusekiSPARQLClient(ds_name='test', namespaces=ns)
+        client = FusekiSPARQLClient(
+            ds_name='test', namespaces=ns, service_name='query'
+        )
 
-        assert client._service_uri == 'http://localhost:3030/test/sparql'
+        assert client._ds_name == 'test'
+        assert client._service_name == 'query'
         assert client._namespaces == ns
+        assert client._build_uri() == 'http://localhost:3030/test/query'
 
     def test_sparql_api_client_parse_uri(self):
-        uri = _parse_uri('http://localhost:3030/data-service/')
-        assert uri == '<http://localhost:3030/data-service/>'
+        uri = _parse_uri('http://localhost:3030/data-service/query')
+        assert uri == '<http://localhost:3030/data-service/query>'
+
+        uri = _parse_uri('<http://localhost:3030/data-service/query>', False)
+        assert uri == '<http://localhost:3030/data-service/query>'
+
+        with pytest.raises(ArgumentError):
+            _parse_uri('<RDFlib>[<http://localhost:3030/data-service/query>]')
+
+        with pytest.raises(ArgumentError):
+            _parse_uri({'this': 'is_not_a_string'}, False)
 
     def test_sparql_api_client_prepare_request(self, sparql_client):
         query = "SELECT ?s ?p ?o WHERE { ?s rdf:type ?var } LIMIT 25"
@@ -491,7 +504,7 @@ class TestFusekiSPARQLClient():
     def test_sparql_api_client_query(self, sparql_client, triple_data):
         responses.add(
             method=responses.GET,
-            url=sparql_client._service_uri,
+            url=sparql_client._build_uri(),
             status=200,
             json=triple_data,
         )
@@ -509,7 +522,7 @@ class TestFusekiSPARQLClient():
 
         responses.add(
             method=responses.GET,
-            url=sparql_client._service_uri,
+            url=sparql_client._build_uri(),
             status=200,
             json=triple_data,
         )
@@ -522,7 +535,7 @@ class TestFusekiSPARQLClient():
     def test_sparql_api_client_value(self, sparql_client, value_data):
         responses.add(
             method=responses.GET,
-            url=sparql_client._service_uri,
+            url=sparql_client._build_uri(),
             status=200,
             json=value_data,
         )
