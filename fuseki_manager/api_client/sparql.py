@@ -19,10 +19,10 @@ class FusekiSPARQLClient(FusekiBaseClient):
         self._namespaces = namespaces
         self._service_uri = self._build_uri(service_name)
 
-    def _build_uri(self, ds_name, service_name='sparql'):
+    def _build_uri(self, service_name='sparql'):
         """Build service URI.
 
-        :param str ds_name: Dataset's name used in URI.
+        :param str service_name: Service name  to use.
         :returns str: Service's absolute URI.
         """
         return '{}{}/{}'.format(self._base_uri, self._ds_name, service_name)
