@@ -1,4 +1,4 @@
-from ..utils import url_validator
+from ..utils import is_url, parse_url
 from ..exceptions import EmptyDBError, UniquenessDBError, ArgumentError
 
 from .base import FusekiBaseClient
@@ -73,7 +73,7 @@ class FusekiSPARQLClient(FusekiBaseClient):
         if nb_results < 1:
             if raise_if_empty:
                 raise EmptyDBError
-            return None
+            return []
 
         if nb_results == 1:
             return results
@@ -131,11 +131,11 @@ class FusekiSPARQLClient(FusekiBaseClient):
         return self._service_data.upload_files(self._ds_name, files)
 
 
-def _parse_uri(uri, raise_if_not_uri=True):
-    if isinstance(uri, str):
-        if url_validator(uri):
-            return '<{}>'.format(uri)
+def _parse_uri(value, raise_if_not_uri=True):
+    if isinstance(value, str):
+        if is_url(value):
+            return parse_url(value)
         if not raise_if_not_uri:
-            return uri
+            return value
     msg = 'Invalid URI [{}]'
-    raise ArgumentError(msg.format(uri))
+    raise ArgumentError(msg.format(value))

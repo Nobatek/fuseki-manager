@@ -4,7 +4,7 @@ import os
 import io
 import pytest
 
-from fuseki_manager.utils import build_http_file_obj, url_validator
+from fuseki_manager.utils import build_http_file_obj, is_url
 from fuseki_manager.exceptions import InvalidFileError
 
 
@@ -24,10 +24,12 @@ class TestFusekiManagerUtils():
         with pytest.raises(InvalidFileError):
             build_http_file_obj('test', 'text/plain')
 
-    def test_utils_url_validator(self):
-        assert (url_validator('http://foobar.net'))
-        assert (url_validator('https://foo-5-bar.net/baz/'))
-        assert (url_validator('https://localhost:3030/baz/zed#'))
-        assert (not url_validator('//foo_bar.net'))
-        assert (not url_validator('//foà0@o§-bar.net'))
-        assert (not url_validator('http://10.0.0.1'))
+    def test_utils_is_url(self):
+        assert (is_url('http://foobar.net'))
+        assert (is_url('https://foo-5-bar.net/baz/'))
+        assert (is_url('https://localhost:3030/baz/zed#'))
+        assert (is_url('<https://foo-5-bar.net/baz/>'))
+        assert (not is_url('//foo_bar.net'))
+        assert (not is_url('//foà0@o§-bar.net'))
+        assert (not is_url('http://10.0.0.1'))
+        assert (not is_url('<":">'))

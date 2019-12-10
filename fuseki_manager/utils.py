@@ -36,11 +36,13 @@ def build_http_file_obj(source, mime_type):
     raise InvalidFileError(str(source))
 
 
-def url_validator(value):
+def is_url(value):
     """Return whether or not given value is a valid URL."""
 
     regex = re.compile(
         r"^"
+        # startchar <
+        r"<?"
         # protocol identifier
         r"(?:(?:https?|ftp)://)"
         r"(?:"
@@ -59,8 +61,34 @@ def url_validator(value):
         r"(?:/\S*)?"
         # query string
         r"(?:\?\S*)?"
+        # endchar >
+        r">?"
         r"$",
         re.UNICODE | re.IGNORECASE
     )
     pattern = re.compile(regex)
     return pattern.match(value)
+
+
+def is_literal(value):
+    chars = "\"\'"
+    return \
+        ":" not in value or \
+        value[0] in chars and value[-1] in chars
+
+
+def parse_url(value):
+    if not value.startswith('<'):
+        value = '<' + value
+    if not value.endswith('>'):
+        value = value + '>'
+    return value
+
+
+def parse_literal(value):
+    chars = "\"\'"
+    if value[0] not in chars:
+        value = '"' + value
+    if value[-1] not in chars:
+        value = value + '"'
+    return value
