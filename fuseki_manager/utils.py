@@ -66,8 +66,7 @@ def is_url(value):
         r"$",
         re.UNICODE | re.IGNORECASE
     )
-    pattern = re.compile(regex)
-    return pattern.match(value)
+    return regex.match(value)
 
 
 def is_literal(value):
