@@ -133,6 +133,7 @@ class FusekiSPARQLClient(FusekiBaseClient):
 
 def _parse_uri(value, raise_if_not_uri=True):
     if isinstance(value, str):
+        value = str(value)
         if is_url(value):
             return parse_url(value)
         if not raise_if_not_uri:
