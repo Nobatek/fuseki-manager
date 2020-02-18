@@ -9,7 +9,8 @@ class FusekiSPARQLClient(FusekiBaseClient):
     """Fuseki 'sparql' API client (sparql service)."""
 
     def __init__(self, ds_name, *,
-                 service_name='sparql', namespaces={},
+                 query_service='sparql', update_service='update',
+                 namespaces={},
                  **kwargs):
 
         super().__init__(**kwargs)
@@ -17,9 +18,10 @@ class FusekiSPARQLClient(FusekiBaseClient):
 
         self._ds_name = ds_name
         self._namespaces = namespaces
-        self._service_name = service_name
+        self._query_service = query_service
+        self._update_service = update_service
 
-    def _build_uri(self):
+    def _build_uri(self, service):
         """Build service URI.
 
         :returns str: Service's absolute URI.
@@ -27,7 +29,7 @@ class FusekiSPARQLClient(FusekiBaseClient):
         return '{}{}/{}'.format(
             self._base_uri,
             self._ds_name,
-            self._service_name
+            service
         )
 
     def _prepare_query(self, query, namespaces={}, bindings={}):
@@ -51,19 +53,37 @@ class FusekiSPARQLClient(FusekiBaseClient):
 
         return '{}{}{}'.format(ns_str, query, bind_str)
 
+    def update_query(self, query, **kwargs):
+        """
+        Execute query with 'update_service' endpoint.  Return raw JSON
+        result from Fuseki instance. This method is to use with INSERT queries.
+        """
+        prepared_query = self._prepare_query(query, **kwargs)
+        params = {'update': prepared_query}
+        return self._post(self._build_uri(self._update_service), data=params)
+        self._update_service
+
     def _exec_query(self, prepared_query):
         params = {'query': prepared_query}
-        response = self._get(self._build_uri(), params=params)
+        uri = self._build_uri(self._query_service)
+        response = self._get(uri, params=params)
         return response.json()
 
     def raw_query(self, query, **kwargs):
+        """
+        Execute query with 'query_service' endpoint. Return raw JSON
+        result from Fuseki instance. This method is to use with ASK queries.
+        """
         query = self._prepare_query(query, **kwargs)
         return self._exec_query(query)
 
     def query(self, query, *,
-              raise_if_empty=False, raise_if_many=False,
-              **kwargs):
-        """List SPARQL query results."""
+              raise_if_empty=False, raise_if_many=False, **kwargs):
+        """
+        Execute query with 'query_service' endpoint. Apply post-treatment to
+        Fuseki JSON result. Check result number and return only results
+        bindings. This method is to use with SELECT queries.
+        """
         query = self._prepare_query(query, **kwargs)
         jsonres = self._exec_query(query)
 
