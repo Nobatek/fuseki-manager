@@ -33,6 +33,26 @@ Examples
     result = client.get_all_datasets()
     # 'result' contains information about datasets
 
+
+.. code-block:: python
+
+    from fuseki_manager import FusekiSPARQLClient
+    # Creation du client
+    db = FusekiSPARQLClient('dataset_name')
+    
+    # SELECT request
+    query = "SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 25"
+    db.query(query)
+    # Other kind of requests with results
+    ns = {'foaf': 'http://xmlns.com/foaf/0.1/'}
+    query = 'ASK  { ?x foaf:name  "Alice" }'
+    db.raw_query(query, namespaces=ns)
+    # INSERT requets
+    ns = {'dc': 'http://purl.org/dc/elements/1.1/'}
+    query = 'INSERT DATA { <http://example/book1> dc:title "A new book" }'
+    db.update_query(query, namespaces=ns)
+
+
 Installation
 ============
 
