@@ -43,19 +43,19 @@ Examples
     # SELECT request
     query = "SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 25"
     result = db.query(query)
-    // result = JSON parsed response's results' bindings
+    # result = JSON parsed response's results' bindings
 
     # Other kind of requests with results
     ns = {'foaf': 'http://xmlns.com/foaf/0.1/'}
     query = 'ASK  { ?x foaf:name  "Alice" }'
     result = db.raw_query(query, namespaces=ns)
-    // result = Raw JSON parsed response
+    # result = Raw JSON parsed response
 
     # INSERT requets
     ns = {'dc': 'http://purl.org/dc/elements/1.1/'}
     query = 'INSERT DATA { <http://example/book1> dc:title "A new book" }'
     result = db.update_query(query, namespaces=ns)
-    // result = Raw HTTP response
+    # result = Raw HTTP response
 
 
 Installation
