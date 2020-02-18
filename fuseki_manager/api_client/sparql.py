@@ -55,13 +55,13 @@ class FusekiSPARQLClient(FusekiBaseClient):
 
     def update_query(self, query, **kwargs):
         """
-        Execute query with 'update_service' endpoint.  Return raw JSON
-        result from Fuseki instance. This method is to use with INSERT queries.
+        Execute query with 'update_service' endpoint.  Return raw HTTP response
+        from Fuseki instance. This method is to use with INSERT queries.
         """
         prepared_query = self._prepare_query(query, **kwargs)
         params = {'update': prepared_query}
-        return self._post(self._build_uri(self._update_service), data=params)
-        self._update_service
+        uri = self._build_uri(self._update_service)
+        return self._post(uri, data=params)
 
     def _exec_query(self, prepared_query):
         params = {'query': prepared_query}
@@ -72,7 +72,7 @@ class FusekiSPARQLClient(FusekiBaseClient):
     def raw_query(self, query, **kwargs):
         """
         Execute query with 'query_service' endpoint. Return raw JSON
-        result from Fuseki instance. This method is to use with ASK queries.
+        response from Fuseki instance. This method is to use with ASK queries.
         """
         query = self._prepare_query(query, **kwargs)
         return self._exec_query(query)
@@ -81,7 +81,7 @@ class FusekiSPARQLClient(FusekiBaseClient):
               raise_if_empty=False, raise_if_many=False, **kwargs):
         """
         Execute query with 'query_service' endpoint. Apply post-treatment to
-        Fuseki JSON result. Check result number and return only results
+        Fuseki JSON response. Check result number and return only results
         bindings. This method is to use with SELECT queries.
         """
         query = self._prepare_query(query, **kwargs)
