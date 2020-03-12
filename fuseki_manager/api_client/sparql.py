@@ -6,7 +6,15 @@ from .data import FusekiDataClient
 
 
 class FusekiSPARQLClient(FusekiBaseClient):
-    """Fuseki 'sparql' API client (sparql service)."""
+    """
+    Fuseki 'sparql' API client (sparql service).
+
+    :param ds_name: string - name of dataset to use
+    :param query_service: string - name of service to use for selecting data
+    :param update_service: string - name of service to use for updating data
+    :param namespaces: dict - namespaces used as PREFIX for queries.
+    Ex PREFIX key: <value>
+    """
 
     def __init__(self, ds_name, *,
                  query_service='sparql', update_service='update',
@@ -137,7 +145,7 @@ class FusekiSPARQLClient(FusekiBaseClient):
         msg = "Invalid arguments ({}, {}, {})"
         raise ArgumentError(msg.format(sbj, pred, obj))
 
-    def upload_data(self, files):
+    def upload_data(self, files, src_mime_type=None):
         """Upload and insert datas by sending a list of files to a dataset.
         (Fuseki data service is involved.)
 
@@ -148,7 +156,9 @@ class FusekiSPARQLClient(FusekiBaseClient):
         - Path or string to file_name
         - file-like object
         """
-        return self._service_data.upload_files(self._ds_name, files)
+        return self._service_data.upload_files(
+            self._ds_name, files, src_mime_type
+        )
 
 
 def _parse_uri(value, raise_if_not_uri=True):

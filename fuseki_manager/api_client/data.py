@@ -29,7 +29,7 @@ class FusekiDataClient(FusekiBaseClient):
         self._post(uri, data=query_params, expected_status=(200, 204,))
         return True
 
-    def upload_files(self, ds_name, sources):
+    def upload_files(self, ds_name, sources, src_mime_type=None):
         """Restore a list of data files to a dataset.
 
         :param str ds_name: Dataset's name.
@@ -38,9 +38,12 @@ class FusekiDataClient(FusekiBaseClient):
         :raises InvalidFileError:
         """
         uri = self._build_uri(ds_name, service_name='data')
+        src_mime_type = 'application/rdf+xml' \
+            if src_mime_type is None else src_mime_type
+
         # build files parameter
         files = [
-            ('file', build_http_file_obj(src, 'application/rdf+xml'))
+            ('file', build_http_file_obj(src, src_mime_type))
             for src in sources]
         response = self._post(uri, files=files)
         return response.json()
