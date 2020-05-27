@@ -232,12 +232,15 @@ class FusekiAdminClient(FusekiBaseClient):
         response = self._get(uri, not_found_raise_exc=TaskNotFoundError)
         return response.json()
 
-    def restore_data(self, ds_name, file_paths):
+    def restore_data(self, ds_name, file_paths, src_mime_type=None):
         """Upload and insert datas by sending a list of files to a dataset.
         (Fuseki data service is involved.)
 
         :param str ds_name: Dataset's name.
         :param list[Path] file_paths: List of file's path to send.
+        :param str src_mime_type: Mime type of data send.
         :returns dict: Details on data inserted, JSON format.
         """
-        return self._service_data.upload_files(ds_name, file_paths)
+        return self._service_data.upload_files(
+            ds_name, file_paths, src_mime_type
+        )
