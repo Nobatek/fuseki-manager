@@ -111,6 +111,12 @@ class FusekiSPARQLClient(FusekiBaseClient):
                 raise UniquenessDBError
             return results
 
+    def _get_values(self, results):
+        return [
+            {key: val['value'] for key, val in result.items()}
+            for result in results
+        ]
+
     def triples(self, sbj=None, pred=None, obj=None, **kwargs):
         """Generator over the triple store.
         Return triples that match the given pattern."""
@@ -123,23 +129,26 @@ class FusekiSPARQLClient(FusekiBaseClient):
             for r in self.query(query, bindings=bindings, **kwargs)
         ]
 
-    def value(self, sbj=None, pred=None, obj=None, raise_if_empty=True):
+    def value(
+        self, sbj=None, pred=None, obj=None,
+        raise_if_empty=True, raise_if_many=True
+    ):
         """Get a value for a pair of two criteria."""
 
         if pred is not None and obj is not None:
             s, _, _ = self.triples(
                 sbj=sbj, pred=pred, obj=obj,
-                raise_if_empty=raise_if_empty, raise_if_many=True)[0]
+                raise_if_empty=raise_if_empty, raise_if_many=raise_if_many)[0]
             return s
         if sbj is not None and obj is not None:
             _, p, _ = self.triples(
                 sbj=sbj, pred=pred, obj=obj,
-                raise_if_empty=raise_if_empty, raise_if_many=True)[0]
+                raise_if_empty=raise_if_empty, raise_if_many=raise_if_many)[0]
             return p
         if sbj is not None and pred is not None:
             _, _, o = self.triples(
                 sbj=sbj, pred=pred, obj=obj,
-                raise_if_empty=raise_if_empty, raise_if_many=True)[0]
+                raise_if_empty=raise_if_empty, raise_if_many=raise_if_many)[0]
             return o
 
         msg = "Invalid arguments ({}, {}, {})"
