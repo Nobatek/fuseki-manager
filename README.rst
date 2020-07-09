@@ -93,3 +93,10 @@ Development
 
     # Run tests with coverage
     $ py.test --cov=fuseki_manager --cov-report term-missing
+
+API Documentation
+===========
+
+https://nobatek.github.io/fuseki-manager/
+
+
